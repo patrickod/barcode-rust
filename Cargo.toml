@@ -1,0 +1,12 @@
+[package]
+
+name = "barcode_scanner"
+version = "0.0.1"
+authors = [ "Patrick O'Doherty <p@trickod.com>" ]
+
+[dependencies]
+libc = "0.1.6"
+
+[[bin]]
+
+name = "barcode_scanner"
