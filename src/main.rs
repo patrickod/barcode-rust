@@ -8,14 +8,16 @@ use std::env;
 use std::str;
 use getopts::Options;
 
-const EAGAIN: i16 = 11;
-
+#[repr(C)]
 struct InputEvent {
     time: libc::timeval,
     event_type: u16,
     code: u16,
     value: u32
 }
+
+#[repr(C)]
+struct Libevdev;
 
 impl Default for InputEvent {
     fn default() -> InputEvent {
@@ -28,33 +30,44 @@ impl Default for InputEvent {
     }
 }
 
+#[warn(dead_code)]
 enum LibEvdevReadFlag {
-    SYNC = 1, // < Process data in sync mode */
-    NORMAL = 2, // < Process data in normal mode */
-    FORCE_SYNC = 3, // < Pretend the next event is a SYN_DROPPED and require the caller to sync */
-    BLOCKING = 4 // < The fd is not in O_NONBLOCK and a read may block */
+    Sync = 1, // < Process data in sync mode */
+    Normal = 2, // < Process data in normal mode */
+    ForceSync = 3, // < Pretend the next event is a SYN_DROPPED and require the caller to sync */
+    Blocking = 4 // < The fd is not in O_NONBLOCK and a read may block */
 }
 
-struct Libevdev;
 
 #[link(name = "evdev")]
 extern {
     fn libevdev_new() -> *mut Libevdev;
     fn libevdev_new_from_fd(fd: i32, dev: *mut Libevdev) -> i32;
-    fn libevdev_next_event(dev: *mut Libevdev, flag: i16, ev: *mut InputEvent) -> i16;
+    fn libevdev_next_event(dev: *mut Libevdev, flag: u32, ev: *mut InputEvent) -> i32;
     fn libevdev_free(dev: *mut Libevdev);
-    fn libevdev_event_type_get_name(t: u16) -> String;
-    fn libevdev_event_code_get_name(t: u16, code: u16) -> String;
+    fn libevdev_event_type_get_name(t: u16) -> *const libc::c_char;
+    fn libevdev_event_code_get_name(t: u16, code: u16) -> *const libc::c_char;
+}
+
+fn print_event(ev: &InputEvent) {
+    unsafe {
+        let type_slice = CStr::from_ptr(libevdev_event_type_get_name(ev.event_type));
+        let code_slice = CStr::from_ptr(libevdev_event_code_get_name(ev.event_type, ev.code));
+        println!("Event {:?} {:?} {:?}",
+            str::from_utf8(type_slice.to_bytes()).unwrap(),
+            str::from_utf8(code_slice.to_bytes()).unwrap(),
+            ev.value);
+    }
 }
 
 fn listen(file: String) {
     unsafe {
         let f = libc::open(CString::new(file).unwrap().as_ptr(), libc::O_RDONLY | libc::O_NONBLOCK, 0);
-        let mut device = libevdev_new();
+        let device = libevdev_new();
         let err = libevdev_new_from_fd(f, device);
-        let mut rc = 1;
 
-        let mut ev: InputEvent = Default::default();
+        let mut rc = 1;
+        let mut ev: InputEvent = InputEvent::default();
 
         if err < 0 {
             let error_string = libc::strerror(-err);
@@ -64,13 +77,10 @@ fn listen(file: String) {
             return;
         }
 
-        while rc == 1 || rc == 0 || rc == -EAGAIN {
-            rc = libevdev_next_event(device, LibEvdevReadFlag::NORMAL as i16, &mut ev);
+        while rc == 1 || rc == 0 || rc == -libc::EAGAIN {
+            rc = libevdev_next_event(device, LibEvdevReadFlag::Normal as u32, &mut ev);
             if rc == 0 {
-                println!("Event {:?} {:?} {:?}",
-                    libevdev_event_type_get_name(ev.event_type),
-                    libevdev_event_code_get_name(ev.event_type, ev.code),
-                    ev.value);
+                print_event(&ev);
             }
         }
     }
