@@ -31,13 +31,18 @@ impl Default for InputEvent {
 }
 
 #[warn(dead_code)]
-enum LibEvdevReadFlag {
+enum LibevdevReadFlag {
     Sync = 1, // < Process data in sync mode */
     Normal = 2, // < Process data in normal mode */
     ForceSync = 3, // < Pretend the next event is a SYN_DROPPED and require the caller to sync */
     Blocking = 4 // < The fd is not in O_NONBLOCK and a read may block */
 }
 
+#[warn(dead_code)]
+enum LibevdevGrabMode {
+	Grab = 3,	// < Grab the device if not currently grabbed
+	UnGrab = 4	// < Ungrab the device if currently grabbed
+}
 
 #[link(name = "evdev")]
 extern {
@@ -47,6 +52,7 @@ extern {
     fn libevdev_free(dev: *mut Libevdev);
     fn libevdev_event_type_get_name(t: u16) -> *const libc::c_char;
     fn libevdev_event_code_get_name(t: u16, code: u16) -> *const libc::c_char;
+    fn libevdev_grab(dev: *mut Libevdev, grab: u32) -> i32;
 }
 
 fn print_event(ev: &InputEvent) {
@@ -77,8 +83,15 @@ fn listen(file: String) {
             return;
         }
 
+        // Grab the device and prevent it writing to STDIN
+        if libevdev_grab(device, LibevdevGrabMode::Grab as u32) != 0 {
+            println!("Unable to grab device");
+            libevdev_free(device);
+            return;
+        };
+
         while rc == 1 || rc == 0 || rc == -libc::EAGAIN {
-            rc = libevdev_next_event(device, LibEvdevReadFlag::Normal as u32, &mut ev);
+            rc = libevdev_next_event(device, LibevdevReadFlag::Normal as u32, &mut ev);
             if rc == 0 {
                 print_event(&ev);
             }
