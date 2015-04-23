@@ -6,6 +6,7 @@ authors = [ "Patrick O'Doherty <p@trickod.com>" ]
 
 [dependencies]
 libc = "0.1.6"
+getopts = "0.2.10"
 
 [[bin]]
 
