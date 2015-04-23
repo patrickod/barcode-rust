@@ -56,6 +56,10 @@ extern {
 }
 
 fn print_event(ev: &InputEvent) {
+    // Ignore keyup events
+    if ev.value != 1 {
+        return;
+    }
     unsafe {
         let type_slice = CStr::from_ptr(libevdev_event_type_get_name(ev.event_type));
         let code_slice = CStr::from_ptr(libevdev_event_code_get_name(ev.event_type, ev.code));
