@@ -42,7 +42,7 @@ enum LibEvdevReadFlag {
 #[link(name = "evdev")]
 extern {
     fn libevdev_new() -> *mut Libevdev;
-    fn libevdev_new_from_fd(fd: i32, dev: *mut Libevdev) -> i32;
+    fn libevdev_set_fd(dev: *mut Libevdev, fd: i32) -> i32;
     fn libevdev_next_event(dev: *mut Libevdev, flag: u32, ev: *mut InputEvent) -> i32;
     fn libevdev_free(dev: *mut Libevdev);
     fn libevdev_event_type_get_name(t: u16) -> *const libc::c_char;
@@ -64,7 +64,7 @@ fn listen(file: String) {
     unsafe {
         let f = libc::open(CString::new(file).unwrap().as_ptr(), libc::O_RDONLY | libc::O_NONBLOCK, 0);
         let device = libevdev_new();
-        let err = libevdev_new_from_fd(f, device);
+        let err = libevdev_set_fd(device, f);
 
         let mut rc = 1;
         let mut ev: InputEvent = InputEvent::default();
