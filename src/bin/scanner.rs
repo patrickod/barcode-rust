@@ -1,5 +1,6 @@
 extern crate libc;
 extern crate getopts;
+extern crate scanner;
 
 use std::default::Default;
 use std::ffi::CString;
@@ -7,6 +8,8 @@ use std::ffi::CStr;
 use std::env;
 use std::str;
 use getopts::Options;
+
+use scanner::events;
 
 #[repr(C)]
 struct InputEvent {
