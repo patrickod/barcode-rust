@@ -1,5 +1,4 @@
 #![allow(dead_code)]
-#![feature(core)]
 
 extern crate libc;
 extern crate getopts;
@@ -13,7 +12,7 @@ use std::str;
 use getopts::Options;
 
 use scanner::events;
-use std::num::FromPrimitive;
+use std::num;
 
 #[repr(C)]
 struct InputEvent {
