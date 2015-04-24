@@ -1,4 +1,8 @@
-pub enum KeyEvents {
+#![allow(non_camel_case_types)]
+#![allow(dead_code)]
+
+#[derive(FromPrimitive)]
+pub enum KeyEvent {
   KEY_RESERVED = 0,
   KEY_ESC = 1,
   KEY_1 = 2,
@@ -412,5 +416,60 @@ pub enum KeyEvents {
   KEY_KBDINPUTASSIST_ACCEPT = 0x264,
   KEY_KBDINPUTASSIST_CANCEL = 0x265,
   KEY_MAX = 0x2ff,
-  KEY_CNT = (0x2ff+1),
+  KEY_CNT = (0x2ff+1)
+}
+
+impl KeyEvent {
+    fn to_char(&self) -> &str {
+        match *self {
+            KeyEvent::KEY_0 => "0",
+            KeyEvent::KEY_1 => "1",
+            KeyEvent::KEY_2 => "2",
+            KeyEvent::KEY_3 => "3",
+            KeyEvent::KEY_4 => "4",
+            KeyEvent::KEY_5 => "5",
+            KeyEvent::KEY_6 => "6",
+            KeyEvent::KEY_7 => "7",
+            KeyEvent::KEY_8 => "8",
+            KeyEvent::KEY_9 => "9",
+            KeyEvent::KEY_A => "a",
+            KeyEvent::KEY_B => "b",
+            KeyEvent::KEY_C => "c",
+            KeyEvent::KEY_D => "d",
+            KeyEvent::KEY_E => "e",
+            KeyEvent::KEY_F => "f",
+            KeyEvent::KEY_G => "g",
+            KeyEvent::KEY_H => "h",
+            KeyEvent::KEY_I => "i",
+            KeyEvent::KEY_J => "j",
+            KeyEvent::KEY_K => "k",
+            KeyEvent::KEY_L => "l",
+            KeyEvent::KEY_M => "m",
+            KeyEvent::KEY_N => "n",
+            KeyEvent::KEY_O => "o",
+            KeyEvent::KEY_P => "p",
+            KeyEvent::KEY_Q => "q",
+            KeyEvent::KEY_R => "r",
+            KeyEvent::KEY_S => "s",
+            KeyEvent::KEY_T => "t",
+            KeyEvent::KEY_U => "u",
+            KeyEvent::KEY_V => "v",
+            KeyEvent::KEY_W => "w",
+            KeyEvent::KEY_X => "x",
+            KeyEvent::KEY_Y => "y",
+            KeyEvent::KEY_Z => "z",
+            KeyEvent::KEY_APOSTROPHE => "'",
+            KeyEvent::KEY_BACKSLASH => "\\",
+            KeyEvent::KEY_COMMA => " =>",
+            KeyEvent::KEY_DOT => ".",
+            KeyEvent::KEY_EQUAL => "=",
+            KeyEvent::KEY_LEFTBRACE => "{",
+            KeyEvent::KEY_MINUS => "-",
+            KeyEvent::KEY_RIGHTBRACE => "}",
+            KeyEvent::KEY_SEMICOLON => ";",
+            KeyEvent::KEY_SLASH => "/",
+            KeyEvent::KEY_TAB => "\t",
+            _ => "",
+        }
+    }
 }

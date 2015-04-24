@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 extern crate libc;
 extern crate getopts;
 extern crate scanner;
@@ -33,7 +35,6 @@ impl Default for InputEvent {
     }
 }
 
-#[warn(dead_code)]
 enum LibevdevReadFlag {
     Sync = 1, // < Process data in sync mode */
     Normal = 2, // < Process data in normal mode */
@@ -41,7 +42,6 @@ enum LibevdevReadFlag {
     Blocking = 4 // < The fd is not in O_NONBLOCK and a read may block */
 }
 
-#[warn(dead_code)]
 enum LibevdevGrabMode {
 	Grab = 3,	// < Grab the device if not currently grabbed
 	UnGrab = 4	// < Ungrab the device if currently grabbed
