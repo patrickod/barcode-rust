@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+#![feature(core)]
 
 extern crate libc;
 extern crate getopts;
@@ -12,6 +13,7 @@ use std::str;
 use getopts::Options;
 
 use scanner::events;
+use std::num::FromPrimitive;
 
 #[repr(C)]
 struct InputEvent {
@@ -66,6 +68,9 @@ fn print_event(ev: &InputEvent) {
     unsafe {
         let type_slice = CStr::from_ptr(libevdev_event_type_get_name(ev.event_type));
         let code_slice = CStr::from_ptr(libevdev_event_code_get_name(ev.event_type, ev.code));
+
+        let type_enum: events::KeyEvent = FromPrimitive::from_u16(ev.event_type).unwrap();
+
         println!("Event {:?} {:?} {:?}",
             str::from_utf8(type_slice.to_bytes()).unwrap(),
             str::from_utf8(code_slice.to_bytes()).unwrap(),
