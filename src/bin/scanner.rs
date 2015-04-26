@@ -3,6 +3,7 @@
 extern crate libc;
 extern crate getopts;
 extern crate scanner;
+extern crate num;
 
 use std::default::Default;
 use std::ffi::CString;
@@ -12,7 +13,6 @@ use std::str;
 use getopts::Options;
 
 use scanner::events;
-use std::num;
 
 #[repr(C)]
 struct InputEvent {
@@ -68,7 +68,7 @@ fn print_event(ev: &InputEvent) {
         let type_slice = CStr::from_ptr(libevdev_event_type_get_name(ev.event_type));
         let code_slice = CStr::from_ptr(libevdev_event_code_get_name(ev.event_type, ev.code));
 
-        let type_enum: events::KeyEvent = FromPrimitive::from_u16(ev.event_type).unwrap();
+        let type_enum: events::KeyEvent = num::FromPrimitive::from_u16(ev.event_type).unwrap();
 
         println!("Event {:?} {:?} {:?}",
             str::from_utf8(type_slice.to_bytes()).unwrap(),
