@@ -8,6 +8,7 @@ authors = [ "Patrick O'Doherty <p@trickod.com>" ]
 libc = "0.1.6"
 getopts = "0.2.10"
 num = "0.1.24"
+enum_primitive = "0.0.2"
 
 [[bin]]
 name = "scanner"

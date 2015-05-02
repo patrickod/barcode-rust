@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
-extern crate libc;
-extern crate getopts;
 extern crate scanner;
+extern crate getopts;
+extern crate libc;
 extern crate num;
 
 use std::default::Default;
@@ -11,8 +11,8 @@ use std::ffi::CStr;
 use std::env;
 use std::str;
 use getopts::Options;
-
-use scanner::events;
+use scanner::events::KeyEvent;
+use num::traits::FromPrimitive;
 
 #[repr(C)]
 struct InputEvent {
@@ -64,17 +64,8 @@ fn print_event(ev: &InputEvent) {
     if ev.value != 1 {
         return;
     }
-    unsafe {
-        let type_slice = CStr::from_ptr(libevdev_event_type_get_name(ev.event_type));
-        let code_slice = CStr::from_ptr(libevdev_event_code_get_name(ev.event_type, ev.code));
-
-        let type_enum: events::KeyEvent = num::FromPrimitive::from_u16(ev.event_type).unwrap();
-
-        println!("Event {:?} {:?} {:?}",
-            str::from_utf8(type_slice.to_bytes()).unwrap(),
-            str::from_utf8(code_slice.to_bytes()).unwrap(),
-            ev.value);
-    }
+    let type_enum = KeyEvent::from_u16(ev.code).unwrap();
+    println!("Event {:?}", type_enum)
 }
 
 fn listen(file: String) {

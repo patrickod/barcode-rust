@@ -1,7 +1,8 @@
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
 
-#[derive(FromPrimitive)]
+enum_from_primitive! {
+#[derive(Debug,PartialEq)]
 pub enum KeyEvent {
   KEY_RESERVED = 0,
   KEY_ESC = 1,
@@ -417,6 +418,7 @@ pub enum KeyEvent {
   KEY_KBDINPUTASSIST_CANCEL = 0x265,
   KEY_MAX = 0x2ff,
   KEY_CNT = (0x2ff+1)
+}
 }
 
 impl KeyEvent {
