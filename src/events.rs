@@ -422,7 +422,7 @@ pub enum KeyEvent {
 }
 
 impl KeyEvent {
-    fn to_char(&self) -> &str {
+    pub fn to_char(&self) -> &str {
         match *self {
             KeyEvent::KEY_0 => "0",
             KeyEvent::KEY_1 => "1",

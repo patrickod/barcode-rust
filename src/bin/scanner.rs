@@ -1,52 +1,17 @@
 #![allow(dead_code)]
 
-extern crate scanner;
 extern crate getopts;
 extern crate libc;
 extern crate num;
 
-use std::default::Default;
 use std::ffi::CString;
 use std::ffi::CStr;
 use std::env;
 use std::str;
 use getopts::Options;
+
 use scanner::events::KeyEvent;
-use num::traits::FromPrimitive;
-
-#[repr(C)]
-struct InputEvent {
-    time: libc::timeval,
-    event_type: u16,
-    code: u16,
-    value: u32
-}
-
-#[repr(C)]
-struct Libevdev;
-
-impl Default for InputEvent {
-    fn default() -> InputEvent {
-        InputEvent {
-            time: libc::timeval{ tv_sec: 0, tv_usec: 0 },
-            event_type: 0,
-            code: 0,
-            value: 0
-        }
-    }
-}
-
-enum LibevdevReadFlag {
-    Sync = 1, // < Process data in sync mode */
-    Normal = 2, // < Process data in normal mode */
-    ForceSync = 3, // < Pretend the next event is a SYN_DROPPED and require the caller to sync */
-    Blocking = 4 // < The fd is not in O_NONBLOCK and a read may block */
-}
-
-enum LibevdevGrabMode {
-	Grab = 3,	// < Grab the device if not currently grabbed
-	UnGrab = 4	// < Ungrab the device if currently grabbed
-}
+use scanner::parse;
 
 #[link(name = "evdev")]
 extern {
@@ -57,15 +22,6 @@ extern {
     fn libevdev_event_type_get_name(t: u16) -> *const libc::c_char;
     fn libevdev_event_code_get_name(t: u16, code: u16) -> *const libc::c_char;
     fn libevdev_grab(dev: *mut Libevdev, grab: u32) -> i32;
-}
-
-fn print_event(ev: &InputEvent) {
-    // Ignore keyup events
-    if ev.value != 1 {
-        return;
-    }
-    let type_enum = KeyEvent::from_u16(ev.code).unwrap();
-    println!("Event {:?}", type_enum)
 }
 
 fn listen(file: String) {
@@ -92,10 +48,12 @@ fn listen(file: String) {
             return;
         };
 
+        let buf = vec![];
+
         while rc == 1 || rc == 0 || rc == -libc::EAGAIN {
             rc = libevdev_next_event(device, LibevdevReadFlag::Normal as u32, &mut ev);
             if rc == 0 {
-                print_event(&ev);
+                parse::parse_event(&ev, &mut buf);
             }
         }
     }
