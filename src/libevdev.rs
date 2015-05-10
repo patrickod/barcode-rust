@@ -1,15 +1,15 @@
 extern crate libc;
 
 #[repr(C)]
-struct InputEvent {
+pub struct InputEvent {
     time: libc::timeval,
-    event_type: u16,
-    code: u16,
-    value: u32
+    pub event_type: u16,
+    pub code: u16,
+    pub value: u32
 }
 
 #[repr(C)]
-struct Libevdev;
+pub struct Libevdev;
 
 impl Default for InputEvent {
     fn default() -> InputEvent {
@@ -22,14 +22,14 @@ impl Default for InputEvent {
     }
 }
 
-enum LibevdevReadFlag {
+pub enum LibevdevReadFlag {
     Sync = 1, // < Process data in sync mode */
     Normal = 2, // < Process data in normal mode */
     ForceSync = 3, // < Pretend the next event is a SYN_DROPPED and require the caller to sync */
     Blocking = 4 // < The fd is not in O_NONBLOCK and a read may block */
 }
 
-enum LibevdevGrabMode {
+pub enum LibevdevGrabMode {
 	Grab = 3,	// < Grab the device if not currently grabbed
 	UnGrab = 4	// < Ungrab the device if currently grabbed
 }

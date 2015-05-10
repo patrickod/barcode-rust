@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
 extern crate getopts;
+extern crate scanner;
 extern crate libc;
-extern crate num;
 
 use std::ffi::CString;
 use std::ffi::CStr;
@@ -12,6 +12,7 @@ use getopts::Options;
 
 use scanner::events::KeyEvent;
 use scanner::parse;
+use scanner::libevdev::{InputEvent,Libevdev,LibevdevGrabMode,LibevdevReadFlag};
 
 #[link(name = "evdev")]
 extern {
@@ -48,7 +49,7 @@ fn listen(file: String) {
             return;
         };
 
-        let buf = vec![];
+        let mut buf = vec![];
 
         while rc == 1 || rc == 0 || rc == -libc::EAGAIN {
             rc = libevdev_next_event(device, LibevdevReadFlag::Normal as u32, &mut ev);
