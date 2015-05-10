@@ -22,11 +22,13 @@ impl Default for InputEvent {
     }
 }
 
-pub enum LibevdevReadFlag {
-    Sync = 1, // < Process data in sync mode */
-    Normal = 2, // < Process data in normal mode */
-    ForceSync = 3, // < Pretend the next event is a SYN_DROPPED and require the caller to sync */
-    Blocking = 4 // < The fd is not in O_NONBLOCK and a read may block */
+bitflags! {
+    flags LibevdevReadFlag: u32 {
+        const SYNC =      1,
+        const NORMAL =    2,
+        const FORCE_SYNC = 4,
+        const BLOCKING =  8
+    }
 }
 
 pub enum LibevdevGrabMode {

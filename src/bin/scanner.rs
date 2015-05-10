@@ -12,7 +12,7 @@ use getopts::Options;
 
 use scanner::events::KeyEvent;
 use scanner::parse;
-use scanner::libevdev::{InputEvent,Libevdev,LibevdevGrabMode,LibevdevReadFlag};
+use scanner::libevdev::{InputEvent,Libevdev,LibevdevGrabMode,NORMAL,BLOCKING};
 
 #[link(name = "evdev")]
 extern {
@@ -27,7 +27,7 @@ extern {
 
 fn listen(file: String) {
     unsafe {
-        let f = libc::open(CString::new(file).unwrap().as_ptr(), libc::O_RDONLY | libc::O_NONBLOCK, 0);
+        let f = libc::open(CString::new(file).unwrap().as_ptr(), libc::O_RDONLY, 0);
         let device = libevdev_new();
         let err = libevdev_set_fd(device, f);
 
@@ -52,7 +52,7 @@ fn listen(file: String) {
         let mut buf = vec![];
 
         while rc == 1 || rc == 0 || rc == -libc::EAGAIN {
-            rc = libevdev_next_event(device, LibevdevReadFlag::Normal as u32, &mut ev);
+            rc = libevdev_next_event(device, (NORMAL | BLOCKING).bits(), &mut ev);
             if rc == 0 {
                 parse::parse_event(&ev, &mut buf);
             }
