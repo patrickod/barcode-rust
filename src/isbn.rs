@@ -11,7 +11,7 @@ fn test_is_isbn() {
 }
 
 pub fn upc_to_isbn(upc: &[u8]) -> Vec<u8> {
-    let mut isbn = &upc[3..12];
+    let isbn = &upc[3..12];
     let mut sum: u8 = 0;
 
     for i in 0..9 {
