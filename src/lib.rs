@@ -5,3 +5,4 @@ extern crate num;
 pub mod events;
 pub mod libevdev;
 pub mod parse;
+pub mod isbn;
