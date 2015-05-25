@@ -1,5 +1,5 @@
 install:
   - wget http://www.freedesktop.org/software/libevdev/libevdev-1.4.1.tar.xz
   - tar xf libevdev-1.4.1.tar.xz
-  - cd libevdev-1.4.1 && ./configure --prefix=/usr && make && make install
+  - cd libevdev-1.4.1 && ./configure --prefix=/usr && make && sudo make install
 language: rust
