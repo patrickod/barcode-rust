@@ -10,7 +10,6 @@ use std::env;
 use std::str;
 use getopts::Options;
 
-use scanner::events::KeyEvent;
 use scanner::parse;
 use scanner::libevdev::{InputEvent,Libevdev,LibevdevGrabMode,NORMAL,BLOCKING};
 
