@@ -471,7 +471,7 @@ impl KeyEvent {
             KeyEvent::KEY_SEMICOLON => ";",
             KeyEvent::KEY_SLASH => "/",
             KeyEvent::KEY_TAB => "\t",
-            KeyEvent::KEY_END => "\n",
+            KeyEvent::KEY_ENTER => "\n",
             _ => "",
         }
     }
