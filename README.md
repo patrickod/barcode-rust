@@ -12,9 +12,9 @@ This project is mostly an experiment with rust and c libraries
 to help the process of cataloging books at Noisebridge. It specifically
 addresses two issues with using USB barcode scanners for this purpose
 
-  a) The USB scanners emulate keyboards and so write out to STDIN. For
+  * The USB scanners emulate keyboards and so write out to STDIN. For
      systems with multiple input devices this is cumbersome
-  b) We only want the consumer of this program's output to deal with
+  * We only want the consumer of this program's output to deal with
      valid ISBN codes to ingest them into the catalogue.
 
 `scanner` uses
