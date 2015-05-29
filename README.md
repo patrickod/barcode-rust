@@ -21,5 +21,5 @@ addresses two issues with using USB barcode scanners for this purpose
 [libevdev](https://wiki.freedesktop.org/www/Software/libevdev/), a
 wrapper around evdevices in Linux to "claim" the input device created by
 the USB scanner such that its input events aren't consumable by other
-programs accepting input from stdin at the same time. It filters parse
-it's input for valid ISBNv13 barcodes. which it then writes to stdout
+programs accepting input from stdin at the same time. It filters
+its input for valid ISBNv13 barcodes, which it then writes to stdout.
